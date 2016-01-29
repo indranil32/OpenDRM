@@ -42,15 +42,10 @@ public class Test {
 		// server
 		PublicPrivateKeyGen keyGen = PublicPrivateKeyGen.getInstance();
 		DBManager dbManager = new DBManagerImpl(jdbcConnectionURL);
-		Packager packager = new Packager(keyGen, tmpFolder, dbManager);
-		packager.startPackage(source);
-		
 		DomainManager domain = new DomainManager(domainControllerURL, dbManager);
-		packager.publish(domain);
-		
 		EndPoint cdn = new EndPoint(endPointURL, dbManager);
-		packager.publish(cdn);
-		
+		Packager packager = new Packager(keyGen, tmpFolder, dbManager, domain, cdn);
+		packager.startPackage(source);
 		
 		
 		// Client on startup

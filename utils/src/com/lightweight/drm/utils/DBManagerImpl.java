@@ -31,5 +31,11 @@ public class DBManagerImpl implements DBManager{
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public DBElement get(DBElement element) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

@@ -20,14 +20,18 @@ public class Packager {
 	private PublicPrivateKeyGen keyGen;
 	private String tmpFolder;
 	private DBManager dbManager;
+	private DomainManager domainManager;
+	private EndPoint endPoint;
 	
-	public Packager(PublicPrivateKeyGen keyGen, String tmpFolder, DBManager dbManager) {
+	public Packager(PublicPrivateKeyGen keyGen, String tmpFolder, DBManager dbManager, DomainManager domainManager, EndPoint endPoint) {
 		this.keyGen = keyGen;
 		this.tmpFolder = tmpFolder;
 		this.dbManager = dbManager;
+		this.domainManager = domainManager;
+		this.endPoint = endPoint;
 	}
 
-	private void encrypt(File in, File out) throws IOException,
+	private PackagingDetails encrypt(File in, File out) throws IOException,
 			GeneralSecurityException {
 		FileInputStream is = new FileInputStream(in);
 		CipherOutputStream os = new CipherOutputStream(
@@ -36,22 +40,29 @@ public class Packager {
 		UtilityMethods.copy(is, os);
 		os.close();
 		PackagingDetails element = new PackagingDetails();
-		
+		// add details
 		dbManager.add(element);
+		return element;
 	}
 
-	public void publish(DomainManager d) {
-
+	private void publish(DomainManager d, PackagingDetails element) {
+		PackagingDetails dbElement = (PackagingDetails) dbManager.get(element);
+		// add details
+		dbManager.add(dbElement);
 	}
 
-	public void publish(EndPoint cdn) {
-
+	private void publish(EndPoint endPoint, PackagingDetails element) {
+		PackagingDetails dbElement = (PackagingDetails) dbManager.get(element);
+		// add details
+		dbManager.add(dbElement);
 	}
 
 	public void startPackage(String source) throws IOException,
 			GeneralSecurityException {
 		File sourceFile = new File(source);
 		File encryptedFile = new File(tmpFolder + File.separator + sourceFile.getName());
-		encrypt(sourceFile, encryptedFile);
+		PackagingDetails element = encrypt(sourceFile, encryptedFile);
+		publish(domainManager, element);
+		publish(endPoint, element);
 	}
 }

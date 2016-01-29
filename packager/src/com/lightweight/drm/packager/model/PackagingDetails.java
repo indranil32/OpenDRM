@@ -1,5 +1,7 @@
 package com.lightweight.drm.packager.model;
 
+import com.lightweight.drm.utils.DBElement;
+
 public class PackagingDetails implements DBElement{
 	
 	String encryptedFile;

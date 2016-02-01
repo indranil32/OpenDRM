@@ -10,8 +10,8 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
 
 import com.lightweight.drm.domain.controller.DomainManager;
+import com.lightweight.drm.endpoint.EndPoint;
 import com.lightweight.drm.utils.DBManager;
-import com.lightweight.drm.utils.EndPoint;
 import com.lightweight.drm.utils.UtilityMethods;
 import com.lightweight.drm.packager.model.*;
 
@@ -40,8 +40,6 @@ public class Packager {
 		UtilityMethods.copy(is, os);
 		os.close();
 		PackagingDetails element = new PackagingDetails();
-		// add details
-		dbManager.add(element);
 		return element;
 	}
 
@@ -57,11 +55,13 @@ public class Packager {
 		dbManager.add(dbElement);
 	}
 
-	public void startPackage(String source) throws IOException,
+	public void startPackaging(String source) throws IOException,
 			GeneralSecurityException {
 		File sourceFile = new File(source);
 		File encryptedFile = new File(tmpFolder + File.separator + sourceFile.getName());
 		PackagingDetails element = encrypt(sourceFile, encryptedFile);
+		// add details
+		dbManager.add(element);
 		publish(domainManager, element);
 		publish(endPoint, element);
 	}

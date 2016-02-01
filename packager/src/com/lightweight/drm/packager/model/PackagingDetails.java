@@ -4,12 +4,27 @@ import com.lightweight.drm.utils.DBElement;
 
 public class PackagingDetails implements DBElement{
 	
-	String encryptedFile;
-	String sourceFile;
-	String algo;
-	String license;
-	String createdDate;
-	String updatedDate;
-	String publisingURL;
-	String domainControllerURL;
+	public String key;
+	public String encryptedFile;
+	public String sourceFile;
+	public String algo;
+	public String license;
+	public String createdDate;
+	public String updatedDate;
+	public String publisingURL;
+	public String domainControllerURL;
+	
+	@Override
+	public String getKey() {
+		return key;
+	}
+	@Override
+	public DBElement get() {
+		// TODO Auto-generated method stub
+		return this;
+	}
+	@Override
+	public void set(DBElement element) {
+		//
+	}
 }

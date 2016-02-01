@@ -1,4 +1,6 @@
-package com.lightweight.drm.utils;
+package com.lightweight.drm.endpoint;
+
+import com.lightweight.drm.utils.DBManager;
 
 public class EndPoint {
 

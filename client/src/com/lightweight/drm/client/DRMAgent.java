@@ -78,4 +78,9 @@ public class DRMAgent {
 		
 	}
 
+
+	public void register() {
+		
+	}
+
 }

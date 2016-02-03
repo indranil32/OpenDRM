@@ -1,63 +1,51 @@
 package com.open.drm.client;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
-import javafx.application.Application;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.SceneBuilder;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
+import javax.crypto.spec.SecretKeySpec;
 
 import com.open.drm.endpoint.ClientEndPointImpl;
 import com.open.drm.endpoint.EndPoint;
+import com.open.drm.test.ExceptionFreeProcess;
+import com.open.drm.utils.model.SetUpObject;
 
-public class Player extends Application{
+public class Player {
 	
-	private File media;
 	private ClientEndPointImpl endpoint;
 	private DRMAgent agent;
+	private SetUpObject setup; 
 	
-	public Player(DRMAgent agent, EndPoint endpoint) {
+	public Player(DRMAgent agent, EndPoint endpoint, SetUpObject setup) {
 		this.endpoint = (ClientEndPointImpl) endpoint;
 		this.agent = agent;
+		this.setup = setup;
 	}
 
-	private FileInputStream getContent(String content) {
-		endpoint.getContent(content);
-		return null;
+	private File getContent(String content) throws FileNotFoundException {
+		return endpoint.getContent(content);
 	}
 
-	public void play(String content) throws IOException, GeneralSecurityException {
-		FileInputStream fis = getContent(content);
-		agent.sharePublicKey();
-		agent.getLicense();
-		FileOutputStream out = agent.decryptPayload(fis);
-		String[] args = null;
-		launch(args);
+	public void play() throws IOException, GeneralSecurityException {
+		File in = getContent(setup.contentId);
+		byte[] aeskey = null;
+		PublicKey publicKey = null;
+		PrivateKey privateKey = null;
+		agent.sharePublicKey(aeskey, publicKey, privateKey);
+		byte[] license = agent.getLicense(setup.contentId, publicKey);
+		byte[] lic = agent.decryptLicenseKey(license, privateKey);
+		File out = new File(setup.clearClientFile);
+		agent.decryptContent(in, out, lic);
+		testffPlay(setup.clearClientFile);
 	}
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setTitle("Media");
-	    Group root = new Group();
-	    Media media = new Media("dummyURL");
-	    MediaPlayer mediaPlayer = new MediaPlayer(media);
-	    mediaPlayer.play();
-
-	    MediaView mediaView = new MediaView(mediaPlayer);
-
-	    root.getChildren().add(mediaView);
-	    Scene scene = SceneBuilder.create().width(500).height(500).root(root)
-	            .fill(Color.WHITE).build();
-	    primaryStage.setScene(scene);
-	    primaryStage.show();
+	private void testffPlay(String inputFile) {
+		System.out.println("Testing the newly encoded video by playing it using ffplay");
+		ProcessBuilder pb = new ProcessBuilder("cmd.exe","/c","start","D:\\Dropbox\\github\\video-engineering\\ffmpeg\\bin\\ffplay.exe","-i", inputFile);
+		ExceptionFreeProcess.process(pb);
 	}
 }

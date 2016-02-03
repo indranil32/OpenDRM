@@ -1,20 +1,22 @@
 package com.open.drm.endpoint;
 
-import com.open.drm.utils.DBManager;
-import com.open.drm.utils.model.SetUpObject;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public class ClientEndPointImpl implements EndPoint{
 	
-	private DBManager dbManager; 
-	private SetUpObject setup;
+	private EndPoint endpoint;
 	
-	public ClientEndPointImpl(DBManager dbManager, SetUpObject setup) {
-		this.dbManager = dbManager;
-		this.setup = setup;
+	public ClientEndPointImpl() {
+
 	}
 
-	public void getContent(String content) {
-		
+	public ClientEndPointImpl(EndPoint endpoint) {
+		this.endpoint = endpoint;
+	}
+	
+	public File getContent(String content) throws FileNotFoundException {
+		return ((EndPointImpl)this.endpoint).getContent(content);
 	}
 
 }

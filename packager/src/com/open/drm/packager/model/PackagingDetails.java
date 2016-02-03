@@ -1,22 +1,29 @@
 package com.open.drm.packager.model;
 
+import java.io.File;
+import java.util.Date;
+
 import com.open.drm.utils.model.DBElement;
 
 public class PackagingDetails implements DBElement{
 	
-	public String key;
-	public String encryptedFile;
-	public String sourceFile;
+	public String id;
+
+	public File encryptedSourceContentFile;
+	public File clearSourceContentFile;
 	public String algo;
-	public String license;
-	public String createdDate;
-	public String updatedDate;
+	public byte[] license;
+	public byte[] key;
+	public File licenseFile;
+	public File keyFile;
+	public Date createdDate;
+	public Date publishingDate;
 	public String publisingURL;
 	public String domainControllerURL;
 	
 	@Override
 	public String getKey() {
-		return key;
+		return id;
 	}
 	@Override
 	public DBElement get() {
